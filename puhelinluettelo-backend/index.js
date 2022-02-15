@@ -1,5 +1,6 @@
 var express = require('express')
 var app = express()
+app.use(express.json())
 
 let persons = [
     {   
@@ -26,6 +27,18 @@ let persons = [
 ]
 let date = new Date();
 let howMany = persons.length;
+
+const generateId = () => {
+  const randomId = Math.floor(Math.random() * 9999999999)
+  return randomId
+  /*const maxId = persons.length > 0
+    ? Math.max(...persons.map(n => n.id))
+    : 0
+  return maxId + 1*/
+}
+
+
+
 app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
   })
@@ -33,9 +46,11 @@ app.get('/', (request, response) => {
 app.get('/api/persons', (request, response) => {
     response.json(persons)
   })
+
 app.get('/info', (request, response) => {
     response.send('Phonebook has info for '+howMany+' people</br>'+date)
   })
+
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     const person = persons.find(persons => persons.id === id)
@@ -44,6 +59,43 @@ app.get('/api/persons/:id', (request, response) => {
       } else {
         response.status(404).end()
       }
+  })
+
+app.delete('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    persons = persons.filter(persons => persons.id !== id)
+    response.status(204).end()
+  })
+
+  app.post('/api/persons', (request, response) => {
+    const body = request.body
+    const nameAlreadyfound =persons.find(persons => persons.name === body.name)
+    
+    if (!body.name) {
+      return response.status(400).json({ 
+        error: 'name missing' 
+      })
+    }
+    if (!body.number) {
+      return response.status(400).json({ 
+        error: 'number missing' 
+      })
+    }
+    if (nameAlreadyfound) {
+      return response.status(400).json({ 
+        error: 'name already in phonebook' 
+      })
+    }
+
+    const personAdd = {
+      id: generateId(),
+      name: body.name,
+      number: body.number
+    }
+
+    persons = persons.concat(personAdd)
+
+    response.json(personAdd)
   })
 
 const PORT = 3001
