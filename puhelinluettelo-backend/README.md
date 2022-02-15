@@ -1,6 +1,8 @@
 https://koppi-phonebook.herokuapp.com/
 
-/ = hello world
-/info = infosivu
-/api/persons = puhelineluettelo
-/api/persons/ID = puhelinluettelosta yksi yhteystieto IDn perusteella
+
+/info = infosivu /text/html
+<br>
+/api/persons = puhelinluettelo /json
+<br>
+/api/persons/ID = puhelinluettelosta yksi yhteystieto IDn perusteella /json
