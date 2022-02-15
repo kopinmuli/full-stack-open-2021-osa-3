@@ -1,6 +1,15 @@
 var express = require('express')
 var app = express()
+var morgan = require('morgan')
 app.use(express.json())
+
+morgan.token('body',
+function (req, res) { 
+  return JSON.stringify(req.body) })
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
+
 
 let persons = [
     {   
@@ -43,7 +52,8 @@ app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
   })
 
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', (request, response) => {  
+  morgan.token('type', function (req, res) { return req.headers['content-type'] })
     response.json(persons)
   })
 
@@ -68,6 +78,7 @@ app.delete('/api/persons/:id', (request, response) => {
   })
 
   app.post('/api/persons', (request, response) => {
+    
     const body = request.body
     const nameAlreadyfound =persons.find(persons => persons.name === body.name)
     
