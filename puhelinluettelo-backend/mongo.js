@@ -5,13 +5,12 @@ const url =`mongodb+srv://seimuli:${password}@cluster0.mrjew.mongodb.net/phonebo
 
 mongoose.connect(url)
 
+const Person = mongoose.model('Person', personSchema)
+
 const personSchema = new mongoose.Schema({
   name: String,
   number: String,
 })
-
-const Person = mongoose.model('Person', personSchema)
-
 
 if (process.argv.length === 3 )  {
 
